@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "538200045829",
+    "firebase_url": "https://greenway-demo-5acbe.firebaseio.com",
+    "project_id": "greenway-demo-5acbe",
+    "storage_bucket": "greenway-demo-5acbe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538200045829:android:803c8dd8d937d8e8e3df6c",
+        "android_client_info": {
+          "package_name": "com.example.greenway_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538200045829-9d6t9952v66e56u12rcd19grc8nf1cqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvnUkAsxpR2gxKMz-5yfrZBSv9mb4bFcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538200045829-9d6t9952v66e56u12rcd19grc8nf1cqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
