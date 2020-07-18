@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
-// import 'package:firebase/firebase.dart';
-
+import 'user.dart';
+import 'shared/loading.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget
@@ -25,6 +25,13 @@ class _LoginPageState extends State<LoginPage>
   String password="Default";
   String texttodisplay = "";
   bool _isHidden = true;
+  String error = '';
+  bool loading = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User _userFromFirebaseUser(FirebaseUser user)
+  {
+    return user != null ? User(uid: user.uid) : null;
+  }
   void showtext()
   {
     setState(() 
@@ -33,24 +40,29 @@ class _LoginPageState extends State<LoginPage>
     });
   }
 
-  Future <void> signIn() async
+  Future signIn(String email,String password) async
   {
     try
     {
+      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      FirebaseUser user  = result.user;
+      print(user.uid);
+
+      return _userFromFirebaseUser(user);
       // final FirebaseAuth _auth = FirebaseAuth.instance;
       // final FirebaseUser user = (await _auth.signInWithEmailAndPassword(email, email));
-      print("Helloo:");
+      // print("Helloo:");
       // AuthResult result = await  FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
       // FirebaseUser user = result.user;
       // print(user);
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
-          
+      // Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));        
       
     }
     catch(e)
     {
-      Container(child: Text("Invalid Username or password!"));
+      // Container(child: Text("Invalid Username or password!"));
       print(e.message);
+      return null;
     }
   }
 
@@ -62,7 +74,7 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Container(
         padding: EdgeInsets.only(top: 100.0, right: 20.0, left: 20.0, bottom: 20.0),
@@ -152,28 +164,42 @@ class _LoginPageState extends State<LoginPage>
                     
               ),
               
+              
             child: SizedBox(height: 50.0, width: MediaQuery.of(context).size.width,
             
             
             child: RaisedButton(
               
-              onPressed: signIn, 
+              onPressed: () async
+              {
+                setState(() => loading = true);
+                dynamic result = await signIn(email, password);
+                if(result == null)
+                {
+                  setState(() => loading = false);
+                  error = 'Invalid Email or Password';
+                }
+                else
+                {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));  
+                }
+              }, 
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0),
               side: BorderSide(color: Colors.redAccent)),
               child: Text("LOGIN", style: TextStyle(fontSize: 24.0),),
               textColor: Colors.white,
               color: Colors.green,
-              splashColor: Colors.cyan,
-              
-              
-              
-
+              splashColor: Colors.cyan,  
               ),
-                        
               ),
+              
               
             ),
-                                SizedBox(height: 10.0,),
+            SizedBox(height: 10.0,),
+            Container(
+                child: Text(error, style: TextStyle(color: Colors.red, fontSize: 16.0),),
+                ),
+                SizedBox(height: 10.0,),
                         Container(
                           child: Center(
                             child: Row(
@@ -181,12 +207,17 @@ class _LoginPageState extends State<LoginPage>
                               children: <Widget>[
                                 Text("Don't have an account?",style: TextStyle(fontSize: 18.0)),
                                 SizedBox(width: 10.0,),
+                                
                                 FlatButton(onPressed: (){},splashColor: Colors.green, child: Text("SIGN UP", style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 18.0))),
                                 // Text("SIGN UP", style: TextStyle(color: Theme.of(context).primaryColor,))
+                                SizedBox(width: 10.0),
+                                                                                            
                               ],
                             ),
+                            
                           ),
                         ),
+                        
                       ],
                     ),
                   ),
