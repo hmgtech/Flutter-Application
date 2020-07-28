@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:greenway_demo/entry.dart';
 import 'home.dart';
 import 'user.dart';
 import 'shared/loading.dart';
+import 'register.dart';
 void main() => runApp(App());
 
 class App extends StatelessWidget
@@ -44,8 +46,10 @@ class _LoginPageState extends State<LoginPage>
   {
     try
     {
+      print("Helloo1");
       AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       FirebaseUser user  = result.user;
+      // _EntryState(uid: user.uid).print1();
       print(user.uid);
 
       return _userFromFirebaseUser(user);
@@ -172,16 +176,22 @@ class _LoginPageState extends State<LoginPage>
               
               onPressed: () async
               {
+                print("Helloo");
                 setState(() => loading = true);
                 dynamic result = await signIn(email, password);
+                print("Helloo");
                 if(result == null)
                 {
                   setState(() => loading = false);
                   error = 'Invalid Email or Password';
                 }
+                
                 else
                 {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));  
+                  AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                  FirebaseUser user  = result.user;
+                  print(user.uid);
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Home(user:user)));  
                 }
               }, 
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0),
@@ -208,7 +218,9 @@ class _LoginPageState extends State<LoginPage>
                                 Text("Don't have an account?",style: TextStyle(fontSize: 18.0)),
                                 SizedBox(width: 10.0,),
                                 
-                                FlatButton(onPressed: (){},splashColor: Colors.green, child: Text("SIGN UP", style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 18.0))),
+                                FlatButton(onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Register())); 
+                                },splashColor: Colors.green, child: Text("SIGN UP", style: TextStyle(color: Theme.of(context).primaryColor,fontSize: 18.0))),
                                 // Text("SIGN UP", style: TextStyle(color: Theme.of(context).primaryColor,))
                                 SizedBox(width: 10.0),
                                                                                             
